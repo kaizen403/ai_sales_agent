@@ -1,0 +1,21 @@
+{
+  "name": "sales_ai",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.11.0",
+  "dependencies": {
+    "@langchain/groq": "^0.2.3",
+    "dotenv": "^17.2.0",
+    "langchain": "^0.3.29",
+    "puppeteer": "^24.12.1",
+    "ws": "^8.18.3"
+  }
+}
