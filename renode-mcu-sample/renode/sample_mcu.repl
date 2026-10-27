@@ -1,0 +1,72 @@
+// Sample MCU platform: Cortex-M4 + UART + 8 DI + 8 AI + 8 DO + 4 status LEDs
+// Memory map documented in README.md
+
+nvic: IRQControllers.NVIC @ sysbus 0xE000E000
+    priorityMask: 0xf0
+    systickFrequency: 64000000
+
+cpu: CPU.CortexM @ sysbus
+    cpuType: "cortex-m4"
+    nvic: nvic
+
+nvic:
+    IRQ -> cpu@0
+
+flash: Memory.MappedMemory @ sysbus 0x00000000
+    size: 0x20000
+
+sram: Memory.MappedMemory @ sysbus 0x20000000
+    size: 0x10000
+
+uart0: UART.NS16550 @ sysbus 0x40000000
+
+// Digital inputs DI0..DI7 (STM32F1-style IDR @ +0x08)
+gpio_in: GPIOPort.STM32F1GPIOPort @ sysbus <0x40001000, +0x400>
+
+// Digital outputs DO0..DO7 + status LED0..LED3 on pins 8..11 (MiV CoreGPIO OUT @ +0xA0)
+gpio_out: GPIOPort.MiV_CoreGPIO @ sysbus 0x40002000
+
+di0: Miscellaneous.Button @ gpio_in 0
+    -> gpio_in@0
+di1: Miscellaneous.Button @ gpio_in 1
+    -> gpio_in@1
+di2: Miscellaneous.Button @ gpio_in 2
+    -> gpio_in@2
+di3: Miscellaneous.Button @ gpio_in 3
+    -> gpio_in@3
+di4: Miscellaneous.Button @ gpio_in 4
+    -> gpio_in@4
+di5: Miscellaneous.Button @ gpio_in 5
+    -> gpio_in@5
+di6: Miscellaneous.Button @ gpio_in 6
+    -> gpio_in@6
+di7: Miscellaneous.Button @ gpio_in 7
+    -> gpio_in@7
+
+do0: Miscellaneous.LED @ gpio_out 0
+do1: Miscellaneous.LED @ gpio_out 1
+do2: Miscellaneous.LED @ gpio_out 2
+do3: Miscellaneous.LED @ gpio_out 3
+do4: Miscellaneous.LED @ gpio_out 4
+do5: Miscellaneous.LED @ gpio_out 5
+do6: Miscellaneous.LED @ gpio_out 6
+do7: Miscellaneous.LED @ gpio_out 7
+
+led0: Miscellaneous.LED @ gpio_out 8
+led1: Miscellaneous.LED @ gpio_out 9
+led2: Miscellaneous.LED @ gpio_out 10
+led3: Miscellaneous.LED @ gpio_out 11
+
+gpio_out:
+    0 -> do0@0
+    1 -> do1@0
+    2 -> do2@0
+    3 -> do3@0
+    4 -> do4@0
+    5 -> do5@0
+    6 -> do6@0
+    7 -> do7@0
+    8 -> led0@0
+    9 -> led1@0
+    10 -> led2@0
+    11 -> led3@0
