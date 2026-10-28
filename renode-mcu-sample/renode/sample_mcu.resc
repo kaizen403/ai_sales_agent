@@ -1,0 +1,31 @@
+:name: Sample MCU
+:description: Cortex-M4 sample with 8 DI, 8 AI, 8 DO, 4 LEDs, and UART CLI
+
+using sysbus
+
+$NAME?="SampleMCU"
+mach create $NAME
+
+machine LoadPlatformDescription @sample_mcu.repl
+
+# Eight 12-bit AI channels as a Python MMIO peripheral (script must be on Renode PATH).
+$AI_SCRIPT?=@ai_regs.py
+machine PyDevFromFile $AI_SCRIPT 0x40003000 0x20 true "ai"
+
+cpu PerformanceInMips 100
+
+$bin?=@../firmware/build/sample_mcu.elf
+
+# Analyzer optional for interactive use; Robot attaches its own terminal tester.
+# showAnalyzer uart0
+
+macro reset
+"""
+    sysbus LoadELF $bin
+    cpu SP `sysbus ReadDoubleWord 0x0`
+    cpu PC `sysbus ReadDoubleWord 0x4`
+"""
+
+runMacro $reset
+
+emulation Mode SynchronizedTimers
